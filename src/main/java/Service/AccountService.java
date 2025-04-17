@@ -31,13 +31,9 @@ public class AccountService {
     public Account addAccount(Account account){
         //check if account details are valid
         //username NOT blank/null, password >= 4 long and does not already exist
-
-        if (accountDAO.getAccountByUsername(account.getUsername()) != null){
-            return null;
-        }
         
-        if (account.getUsername().length() > 1){
-            if (account.getPassword().length() >= 4){
+        if (account.getUsername().length() > 1 && account.getPassword().length() >= 4){
+            if (accountDAO.getAccountByUsername(account.getUsername()) == null){
                 return accountDAO.insertAccount(account);
             }
         }

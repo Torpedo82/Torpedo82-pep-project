@@ -2,7 +2,6 @@ package DAO;
 
 import Util.ConnectionUtil;
 import Model.Account;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,6 +9,33 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class AccountDAO {
+
+    //get account by account_id
+    public Account getAccountByAccountID(int accountID){
+        Connection connection = ConnectionUtil.getConnection();
+
+        try{
+            String sql = "SELECT * FROM account WHERE account_id = ?;";
+
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setInt(1, accountID);
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                return new Account(rs.getInt("account_id"), 
+                    rs.getString("username"), 
+                    rs.getString("password"));
+            }
+        }catch(SQLException e){
+            System.err.println(e.getMessage());
+        }
+
+        //if no such entry
+        return null;
+    }
+
     //have login be it's own method as in the future it might require more sophisticated methods for security purposes
     //having it seperate will ensure that modifying this method will not impact any other part of the code
     public Account getAccountByLogin(Account account){
