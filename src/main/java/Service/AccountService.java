@@ -15,6 +15,18 @@ public class AccountService {
         this.accountDAO = accountDAO;
     }
 
+    //logging into account
+    public Account loginAccount(Account account){
+        Account verificatedAccount = accountDAO.getAccountByLogin(account);
+
+        if (verificatedAccount != null){
+            return verificatedAccount;
+        }
+
+        //return null if credentials match no account
+        return null;
+    }
+
     //adding an account
     public Account addAccount(Account account){
         //check if account details are valid

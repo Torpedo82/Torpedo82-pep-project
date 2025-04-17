@@ -10,6 +10,33 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class AccountDAO {
+    //have login be it's own method as in the future it might require more sophisticated methods for security purposes
+    //having it seperate will ensure that modifying this method will not impact any other part of the code
+    public Account getAccountByLogin(Account account){
+        Connection connection = ConnectionUtil.getConnection();
+
+        try{
+            String sql = "SELECT * FROM account WHERE username = ? AND password = ?;";
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setString(1, account.getUsername());
+            ps.setString(2, account.getPassword());
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                return new Account(rs.getInt("account_id"), 
+                    rs.getString("username"), 
+                    rs.getString("password"));
+            }
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+
+        //return null if no such account found
+        return null;
+    }
+
     public Account getAccountByUsername(String username){
         Connection connection = ConnectionUtil.getConnection();
 
