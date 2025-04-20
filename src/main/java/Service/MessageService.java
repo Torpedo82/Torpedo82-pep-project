@@ -24,6 +24,36 @@ public class MessageService {
         this.accountDAO = accountDAO;
     }
 
+    //update message by id and if update succeeds then return updated Message
+    public Message updateMessageByID(int id, String messageText){
+        int rowsUpdated = (messageText.length() > 0 && messageText.length() < 255) ? 
+            messageDAO.updateMessageByID(id, messageText) : 0;
+
+        // if (messageText.length() > 0 && messageText.length() < 255){
+        //     rowsUpdated = messageDAO.updateMessageByID(id, messageText);
+        // }
+
+        if (rowsUpdated == 1){
+            return messageDAO.getMessageByID(id);
+        }
+
+        //return null if no message updated OR issue retrieving record
+        return null;
+    }
+
+    //delete message by ID while also returning item if it exists
+    public Message removeMessageByID(int id){
+        Message deletedMessage = messageDAO.getMessageByID(id);
+
+        if (deletedMessage != null){
+            messageDAO.removeMessageByID(id);
+            return deletedMessage;
+        }
+
+        //if no such message return null
+        return null;
+    }
+
     //Retrieve message by its ID
     public Message getMessageByID(int id){
         return messageDAO.getMessageByID(id);

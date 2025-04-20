@@ -1,6 +1,7 @@
 package DAO;
 
 import Util.ConnectionUtil;
+import jakarta.annotation.PreDestroy;
 import Model.Message;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,6 +12,47 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class MessageDAO {
+
+    //update message given message_id, message_text
+    public int updateMessageByID(int id, String messageText){
+        //rowsAffected will either be 1 or 0 depending on if a single record was updated
+        int rowsAffected = 0;
+        Connection connection = ConnectionUtil.getConnection();
+
+        try{
+            String sql = "UPDATE message SET message_text = ? WHERE message_id = ?;";
+
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setString(1, messageText);
+            ps.setInt(2, id);
+
+            rowsAffected = ps.executeUpdate();
+
+        }catch(SQLException e){
+            System.out.println(e);
+        }
+
+        return rowsAffected;
+    }
+
+    //delete message by its ID, can be void as service layer will obtain needed data
+    public void removeMessageByID(int id){
+        Connection connection = ConnectionUtil.getConnection();
+
+        try{
+            String sql = "DELETE FROM message WHERE message_id = ?;";
+
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setInt(1, id);
+
+            ps.executeUpdate();
+
+        }catch(SQLException e){
+            System.out.println(e);
+        }
+    }
 
     //Retrieve a message by its ID
     public Message getMessageByID(int messageID){
