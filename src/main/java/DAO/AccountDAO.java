@@ -29,7 +29,7 @@ public class AccountDAO {
                     rs.getString("password"));
             }
         }catch(SQLException e){
-            System.err.println(e.getMessage());
+            System.out.println(e.getMessage());
         }
 
         //if no such entry

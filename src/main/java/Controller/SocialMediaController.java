@@ -37,7 +37,7 @@ public class SocialMediaController {
         app.post("/login", this::postLoginHandler);
         app.post("/messages", this::postNewMessageHandler);
         app.get("/messages", this::getAllMessagesHandler);
-        // its /shfh/{id}
+        app.get("/messages/{message_id}", this::getMessageByIDHandler);
 
         return app;
     }
@@ -50,8 +50,18 @@ public class SocialMediaController {
         context.json("sample text");
     }
 
-    private void getMessageByIDHandler(Context ctx){
-        int id = Integer.parseInt(Objects.requireNo);
+    private void getMessageByIDHandler(Context ctx) throws JsonProcessingException{
+        int id = Integer.parseInt(ctx.pathParam("message_id"));
+        ObjectMapper mapper = new ObjectMapper();
+
+        Message message = messageService.getMessageByID(id);
+        
+        if (message != null){
+            ctx.json(mapper.writeValueAsString(message)).status(200);
+        }
+        else{
+            ctx.status(200);
+        }
     }
 
     private void postAccountHandler(Context ctx) throws JsonProcessingException{
@@ -100,10 +110,11 @@ public class SocialMediaController {
         }
     }
 
-    private void getAllMessagesHandler(Context ctx){
-        System.err.println("MADE IT TO THE HANDLER");
-        List<Message> messages = messageService.getAllMessages(); 
-        ctx.json(messages).status(200);
+    private void getAllMessagesHandler(Context ctx) throws JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        List<Message> messages = messageService.getAllMessages();
+
+        ctx.json(mapper.writeValueAsString(messages)).status(200);
     }
 
 
