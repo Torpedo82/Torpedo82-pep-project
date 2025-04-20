@@ -24,6 +24,13 @@ public class MessageService {
         this.accountDAO = accountDAO;
     }
 
+    //get all messages by account_id
+    public List<Message> getAllMessagesByAccountID(int accountID){
+        List<Message> accountMessages = messageDAO.getAllMessagesByAccountID(accountID);
+
+        return accountMessages;
+    }
+
     //update message by id and if update succeeds then return updated Message
     public Message updateMessageByID(int id, String messageText){
         int rowsUpdated = (messageText.length() > 0 && messageText.length() < 255) ? 

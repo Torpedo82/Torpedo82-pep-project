@@ -40,6 +40,7 @@ public class SocialMediaController {
         app.get("/messages/{message_id}", this::getMessageByIDHandler);
         app.delete("/messages/{message_id}", this::removeMessageByIDHandler);
         app.patch("/messages/{message_id}", this::updateMessageByIDHandler);
+        app.get("/accounts/{account_id}/messages", this::getAllMessagesByAccountIDHandler);
 
         return app;
     }
@@ -50,6 +51,15 @@ public class SocialMediaController {
      */
     private void exampleHandler(Context context) {
         context.json("sample text");
+    }
+
+    private void getAllMessagesByAccountIDHandler(Context ctx) throws JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        int id = Integer.parseInt(ctx.pathParam("account_id"));
+
+        List<Message> accountMessages = messageService.getAllMessagesByAccountID(id);
+
+        ctx.json(mapper.writeValueAsString(accountMessages)).status(200);
     }
 
     private void updateMessageByIDHandler(Context ctx) throws JsonProcessingException{

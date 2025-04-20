@@ -1,7 +1,6 @@
 package DAO;
 
 import Util.ConnectionUtil;
-import jakarta.annotation.PreDestroy;
 import Model.Message;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +11,36 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class MessageDAO {
+    //Get all messages by account_id
+    public List<Message> getAllMessagesByAccountID(int id){
+        List<Message> accountMessages = new ArrayList<>();
+        Connection connection = ConnectionUtil.getConnection();
+
+        try{
+            String sql = "SELECT * FROM message WHERE posted_by = ?;";
+
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setInt(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                accountMessages.add(new Message(
+                    rs.getInt("message_id"), 
+                    rs.getInt("posted_by"),
+                    rs.getString("message_text"),
+                    rs.getLong("time_posted_epoch")
+                ));
+            }
+
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+
+        //return list which will either be empty or have entries
+        return accountMessages;
+    }
 
     //update message given message_id, message_text
     public int updateMessageByID(int id, String messageText){
