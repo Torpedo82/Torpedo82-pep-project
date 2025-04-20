@@ -3,6 +3,8 @@ package Service;
 import Model.Message;
 import DAO.MessageDAO;
 import DAO.AccountDAO;
+import java.util.List;
+
 
 public class MessageService {
     private MessageDAO messageDAO;
@@ -20,6 +22,18 @@ public class MessageService {
         this.messageDAO = messageDAO;
         //accountDAO should ONLY be used if needing to verify account exists
         this.accountDAO = accountDAO;
+    }
+
+    //Retrieve message by its ID
+    public Message getMessageByID(int id){
+        return messageDAO.getMessageByID(id);
+    }
+
+    //retrieving all messages
+    public List<Message> getAllMessages() {
+        List<Message> messages = messageDAO.getAllMessages();
+
+        return messages;
     }
 
     //adding a message
