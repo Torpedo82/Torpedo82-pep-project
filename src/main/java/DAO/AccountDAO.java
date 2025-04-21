@@ -10,7 +10,7 @@ import Util.ConnectionUtil;
 
 public class AccountDAO {
 
-    //get account by account_id
+    //get account by account_id, used for validation purposes. will use preparedstatement to protect against sql injection
     public Account getAccountByAccountID(int accountID){
         Connection connection = ConnectionUtil.getConnection();
 
@@ -69,7 +69,7 @@ public class AccountDAO {
         return null;
     }
 
-    //Obtain Account record by using username, used for validation purposes. will use preparedstatement to protect against sql injection
+    //Obtain Account record by using username
     public Account getAccountByUsername(String username){
         Connection connection = ConnectionUtil.getConnection();
 
