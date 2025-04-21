@@ -1,12 +1,12 @@
 package DAO;
 
-import Util.ConnectionUtil;
-import Model.Account;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import Model.Account;
+import Util.ConnectionUtil;
 
 public class AccountDAO {
 
@@ -29,6 +29,7 @@ public class AccountDAO {
                     rs.getString("password"));
             }
         }catch(SQLException e){
+            //in a feature complete api would use logger but for current purposes printing to console will suffice
             System.out.println(e.getMessage());
         }
 
@@ -36,8 +37,11 @@ public class AccountDAO {
         return null;
     }
 
-    //have login be it's own method as in the future it might require more sophisticated methods for security purposes
-    //having it seperate will ensure that modifying this method will not impact any other part of the code
+    /*
+        have login be it's own method as in the future it might require more sophisticated methods for security purposes
+        having it seperate will ensure that modifying this method will not impact any other part of the code
+        will use prepared statement for protection against sql injection
+    */
     public Account getAccountByLogin(Account account){
         Connection connection = ConnectionUtil.getConnection();
 
@@ -51,11 +55,13 @@ public class AccountDAO {
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()){
-                return new Account(rs.getInt("account_id"), 
+                return new Account(
+                    rs.getInt("account_id"), 
                     rs.getString("username"), 
                     rs.getString("password"));
             }
         }catch(SQLException e){
+            //in a feature complete api would use logger but for current purposes printing to console will suffice
             System.out.println(e.getMessage());
         }
 
@@ -63,6 +69,7 @@ public class AccountDAO {
         return null;
     }
 
+    //Obtain Account record by using username, used for validation purposes. will use preparedstatement to protect against sql injection
     public Account getAccountByUsername(String username){
         Connection connection = ConnectionUtil.getConnection();
 
@@ -75,24 +82,26 @@ public class AccountDAO {
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()){
-                Account account = new Account(rs.getInt("account_id"),
-                                 rs.getString("username"), 
-                                 rs.getString("password"));
-                return account;
+                return new Account(
+                    rs.getInt("account_id"),
+                    rs.getString("username"), 
+                    rs.getString("password")
+                    );
+
             }
         }catch(SQLException e){
+            //in a feature complete api would use logger but for current purposes printing to console will suffice
             System.out.println(e.getMessage());
         }
 
+        //return null if no such account found
         return null;
     }
 
-
-
+    //insert new Account record by using Account object, use prepared statement to protect from sql injection
     public Account insertAccount(Account account){
         Connection connection = ConnectionUtil.getConnection();
 
-        //try block as cannot start with resources
         try{
             String sql = "INSERT INTO account (username, password) VALUES(?, ?);";
             
@@ -108,13 +117,18 @@ public class AccountDAO {
            
             if (pkRS.next()){
                 int generatedAccountKey = (int) pkRS.getLong(1);
-                return new Account(generatedAccountKey, account.getUsername(), account.getPassword());
+                return new Account(
+                    generatedAccountKey, 
+                    account.getUsername(), 
+                    account.getPassword()
+                    );
             }
 
         }catch(SQLException e){
             //in a feature complete api would use logger but for current purposes printing to console will suffice
             System.out.println(e.getMessage());
         }
+
         //if operation fails no object will be returned and that will indicate operation failure
         return null;
     }
